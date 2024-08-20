@@ -1,8 +1,10 @@
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import s from "./ContactForm.module.css";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
+import { addContact } from "../../redux/contacts/operations";
+import toast, { Toaster } from "react-hot-toast";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -19,9 +21,17 @@ const ContactForm = () => {
       .required("Required"),
   });
 
+  const notify = () => toast("Contact successfully added!");
+
   const handleSubmit = (values, { resetForm }) => {
     const newContact = { name: values.name, number: values.number };
-    dispatch(addContact(newContact));
+    dispatch(addContact(newContact))
+      .then(() => {
+        notify();
+      })
+      .catch((error) => {
+        toast.error("Failed to add contact.");
+      });
     resetForm();
   };
 
@@ -35,19 +45,20 @@ const ContactForm = () => {
         <Form>
           <label htmlFor="name">
             Name
-            <Field name="name" type="search" id="name" autoComplete="name" />
+            <Field name="name" type="text" id="name" autoComplete="name" />
           </label>
           <ErrorMessage name="name" component="div" className={s.error} />
 
           <label htmlFor="number">
             Number
-            <Field name="number" type="search" id="number" autoComplete="tel" />
+            <Field name="number" type="text" id="number" autoComplete="tel" />
           </label>
           <ErrorMessage name="number" component="div" className={s.error} />
 
           <button type="submit">Add contact</button>
         </Form>
       </Formik>
+      <Toaster />
     </div>
   );
 };

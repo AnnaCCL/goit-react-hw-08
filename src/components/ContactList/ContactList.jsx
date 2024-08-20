@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
-import { ThreeCircles } from "react-loader-spinner";
 import Contact from "../Contact/Contact";
 import s from "./ContactList.module.css";
-import { selectIsError, selectIsLoading } from "../../redux/selectors";
-import { selectFilteredContacts } from "../../redux/contactsSlice";
+
+import { selectIsError, selectIsLoading } from "../../redux/contacts/selectors";
+import { selectFilteredContacts } from "../../redux/filters/selectors";
+import Loader from "../Loader/Loader";
+
 const ContactList = () => {
   const contacts = useSelector(selectFilteredContacts);
   const isLoading = useSelector(selectIsLoading);
@@ -11,19 +13,7 @@ const ContactList = () => {
 
   return (
     <div>
-      {isLoading && !isError && (
-        <div className={s.loader}>
-          <ThreeCircles
-            visible={true}
-            height="50"
-            width="50"
-            color="green"
-            ariaLabel="three-circles-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-          />
-        </div>
-      )}
+      {isLoading && !isError && <Loader />}
       {!isLoading && isError && (
         <h2>Oops... The action cannot be performed...</h2>
       )}
